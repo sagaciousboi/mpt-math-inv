@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        h1 {
+            font-size: 30px;
+        }
+        .pascals-triangle {
+            text-align: center;
+        }
+        .row {
+            display: flex;
+            justify-content: center;
+        }
+        .number {
+            width: 0.5px;
+            height: 0.5px;
+            border: 1px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            padding: 5px; /* Add padding to create separation */
+        }
+        .color0 {
+            background-color: #66c2ff; /* Blue for values with modulo 4 = 0 */
+        }
+        .color1 {
+            background-color: #ffff66; /* Yellow for values with modulo 4 = 1 */
+        }
+        .color2 {
+            background-color: #ff6666; /* Red for values with modulo 4 = 2 */
+        }
+        .color3 {
+            background-color: #66ff66; /* Green for values with modulo 4 = 3 */
+        }
+    </style>
+</head>
+<body>
+    <h1>Modified Pascal's Triangle (Modulo 4)</h1> 
+    <div>
+        <label for="firstNumber">First number: </label>
+        <select id="firstNumber">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <br><label for="secondNumber">Second number: </label>
+        <select id="secondNumber">
+            <option value="0">0</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+        <br><button id="generateButton">Generate</button>
+    </div>
+    <div class="pascals-triangle">
+        <!-- Function to calculate binomial coefficients modulo 4 -->
+        <script>
+            function binomialCoefficient(n, k) {
+                if (k === 0 || k === n) return 1;
+                return (binomialCoefficient(n - 1, k - 1) + binomialCoefficient(n - 1, k)) % 4;
+            }
+
+            function generateModifiedPascalsTriangle(firstNum, secondNum) {
+                const numRows = 150; // Set the number of rows to 100
+                const firstRow = [parseInt(firstNum), parseInt(secondNum)];
+                const rows = [firstRow];
+
+                for (let i = 1; i < numRows; i++) {
+                    const newRow = [firstRow[0]];
+                    for (let j = 1; j < rows[i - 1].length; j++) {
+                        newRow.push((rows[i - 1][j - 1] + rows[i - 1][j]) % 4);
+                    }
+                    newRow.push(firstRow[1]);
+                    rows.push(newRow);
+                }
+
+                const triangleContainer = document.querySelector(".pascals-triangle");
+                triangleContainer.innerHTML = ''; // Clear the previous content.
+
+                for (let i = 0; i < rows.length; i++) {
+                    const row = document.createElement("div");
+                    row.className = "row";
+                    for (let j = 0; j < rows[i].length; j++) {
+                        const num = rows[i][j];
+                        const number = document.createElement("div");
+                        number.className = "number color" + num;
+                        number.textContent = num;
+                        row.appendChild(number);
+                    }
+                    triangleContainer.appendChild(row);
+                }
+            }
+
+            document.getElementById("generateButton").addEventListener("click", function() {
+                const firstNum = document.getElementById("firstNumber").value;
+                const secondNum = document.getElementById("secondNumber").value;
+                generateModifiedPascalsTriangle(firstNum, secondNum);
+            });
+
+            // Initial generation
+            generateModifiedPascalsTriangle(1, 1);
+        </script>
+    </div>
+</body>
+</html>
